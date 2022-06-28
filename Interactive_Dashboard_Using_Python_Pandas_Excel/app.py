@@ -1,8 +1,10 @@
 
 
 import pandas as pd  # pip install pandas openpyxl
-import plotly.express as px  # pip install plotly-express
-import streamlit as st  # pip install streamlit
+import plotly.express as px
+from requests import options  # pip install plotly-express
+import streamlit as st
+from traitlets import default  # pip install streamlit
 
 # emojis: https://www.webfx.com/tools/emoji-cheat-sheet/
 st.set_page_config(page_title="Sales Dashboard", page_icon=":bar_chart:", layout="wide")
@@ -25,12 +27,19 @@ def get_data_from_excel():
 df = get_data_from_excel()
 
 # ---- SIDEBAR ----
+
+
+
 st.sidebar.header("Please Filter Here:")
 city = st.sidebar.multiselect(
     "Select the City:",
     options=df["City"].unique(),
-    default=df["City"][0]
+    default=df["City"].unique(),
+  
+    
 )
+
+
 
 customer_type = st.sidebar.multiselect(
     "Select the Customer Type:",
@@ -58,17 +67,15 @@ average_rating = round(df_selection["Rating"].mean(), 1)
 star_rating = ":star:" * int(round(average_rating, 0))
 average_sale_by_transaction = round(df_selection["Total"].mean(), 2)
 
-left_column, middle_column, right_column = st.columns(3)
+left_column, middle_column = st.columns(2)
 with left_column:
     st.subheader("Total Sales:")
     st.subheader(f"US $ {total_sales:,}")
 with middle_column:
-    st.subheader("Average Rating:")
-    st.subheader(f"{average_rating} {star_rating}")
-with right_column:
     st.subheader("Average Sales Per Transaction:")
     st.subheader(f"US $ {average_sale_by_transaction}")
 
+st.write("Average Rating:",f"{average_rating} {star_rating}")
 st.markdown("""---""")
 
 # SALES BY PRODUCT LINE [BAR CHART]
